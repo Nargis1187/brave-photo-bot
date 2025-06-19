@@ -57,4 +57,4 @@ async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.PHOTO & filters.Caption(), handle_msg))
-    await app.run_polling()
+    app.run_polling()
