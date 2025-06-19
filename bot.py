@@ -29,7 +29,7 @@ def process_image(user_img, article):
     y = 100
     bg.paste(fg, (x, y), fg)
     draw = ImageDraw.Draw(bg)
-    font = ImageFont.truetype("arial.ttf", 40)
+    font = ImageFont.load_default()
     text_w, text_h = draw.textsize(article, font=font)
     tx = (bg.width - text_w) // 2
     ty = bg.height - text_h - 50
