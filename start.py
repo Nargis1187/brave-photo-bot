@@ -1,4 +1,3 @@
-import asyncio
 from bot import main
-
-asyncio.run(main())
+import asyncio
+asyncio.get_event_loop().run_until_complete(main())
