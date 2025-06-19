@@ -57,4 +57,4 @@ def main():
     updater = Updater(BOT_TOKEN)
     dp = updater.dispatcher
     dp.add_handler(MessageHandler(Filters.photo & Filters.caption, handle_msg))
-    updater.start_polling()_
+    updater.start_polling()
