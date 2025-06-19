@@ -1,14 +1,15 @@
-import os
 import io
 from PIL import Image, ImageDraw, ImageFont
 import requests
 from telegram import Bot, Update
 from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filters
-import asyncio
+
 BOT_TOKEN = "8152184531:AAGD9lDOVq64yqrWbdP7R-XzuHc9GuZzSZ4"
 REMOVE_BG_KEY = "Zgdmgp94VcWzGC8woY6joX5b"
 TEMPLATE_PATH = "template.png"
+
 bot = Bot(token=BOT_TOKEN)
+
 def remove_bg(image_bytes):
     resp = requests.post(
         'https://api.remove.bg/v1.0/removebg',
@@ -18,6 +19,7 @@ def remove_bg(image_bytes):
     )
     resp.raise_for_status()
     return io.BytesIO(resp.content)
+
 def process_image(user_img, article):
     bg = Image.open(TEMPLATE_PATH).convert("RGBA")
     fg = Image.open(user_img).convert("RGBA")
@@ -35,9 +37,10 @@ def process_image(user_img, article):
     bg.save(buf, format="PNG")
     buf.seek(0)
     return buf
+
 async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.photo:
-        await update.message.reply_text
+        await update.message.reply_text("Кидай фотку товара и артикул в подписи!")
         return
     file = await update.message.photo[-1].get_file()
     photo = await file.download_as_bytearray()
@@ -45,10 +48,12 @@ async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
     img_nobg = remove_bg(io.BytesIO(photo))
     out = process_image(img_nobg, article)
     await update.message.reply_photo(photo=out)
+
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.PHOTO & filters.Caption(), handle_msg))
     return app
+
 def run_bot():
     app = main()
     app.run_polling()
