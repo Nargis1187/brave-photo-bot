@@ -30,11 +30,7 @@ def process_image(user_img, article):
     bg.paste(fg, (x, y), fg)
     draw = ImageDraw.Draw(bg)
     font = ImageFont.load_default()
-
-    bbox = draw.textbbox((0, 0), article, font=font)
-    text_w = bbox[2] - bbox[0]
-    text_h = bbox[3] - bbox[1]
-
+    text_w, text_h = draw.textsize(article, font=font)
     tx = (bg.width - text_w) // 2
     ty = bg.height - text_h - 50
     draw.text((tx, ty), article, font=font, fill="black")
@@ -57,4 +53,4 @@ async def handle_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.PHOTO & filters.Caption(), handle_msg))
-    app.run_polling()
+    await app.run_polling()
